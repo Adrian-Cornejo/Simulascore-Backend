@@ -24,7 +24,7 @@ class ProfesorRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
     def escuela = column[String]("escuela")
     def codigoEscuela = column[String]("codigoEscuela")
     def urlImagen = column[String]("urlImagen")
-    def oneSignalUserId = column[String]("oneSignalUserId")
+    def oneSignalUserId = column[Option[String]]("oneSignalUserId")
 
     def * = (codigoProfesor, codigoDirectivo, nombre, apellido, correo, password, escuela, codigoEscuela, urlImagen, oneSignalUserId) <> ((Profesor.apply _).tupled, Profesor.unapply)
 
@@ -35,5 +35,16 @@ class ProfesorRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   // Buscar un profesor por correo y contraseña
   def findByEmailAndPassword(correo: String, password: String): Future[Option[Profesor]] = {
     db.run(profesores.filter(p => p.correo === correo && p.password === password).result.headOption)
+  }
+  def create(profesor : Profesor): Future[Profesor] = {
+    db.run(profesores += profesor).map(_ => profesor)
+  }
+  def findByEmail(email : String): Future[Option[Profesor]] = {
+    db.run(profesores.filter(_.correo === email).result.headOption)
+  }
+
+
+  def findByCode(codigo: String): Future[Option[Profesor]] = {
+    db.run(profesores.filter(_.codigoProfesor === codigo).result.headOption)
   }
 }

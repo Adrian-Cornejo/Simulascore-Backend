@@ -33,4 +33,8 @@ class DirectivoRepository @Inject()(protected val dbConfigProvider: DatabaseConf
   def findByEmailAndPassword(correo: String, password: String): Future[Option[Directivo]] = {
     db.run(directivos.filter(d => d.correo === correo && d.password === password).result.headOption)
   }
+
+  def findByCode(codigo : String): Future[Option[Directivo]]={
+    db.run(directivos.filter(_.codigoDirectivo === codigo).result.headOption)
+  }
 }

@@ -14,7 +14,7 @@ case class Profesor(
                      escuela: String,
                      codigoEscuela: String,
                      urlImagen: String = "/src/img/imgPerfilesMaestro/user.png",
-                     oneSignalUserId: String
+                     oneSignalUserId: Option[String]
                    )extends User
 
 object Profesor {

@@ -1,12 +1,16 @@
 package controllers
 
+import model.LoginRequest
+
+
 import javax.inject._
 import play.api.mvc._
 import play.api.libs.json._
+
 import scala.concurrent.{ExecutionContext, Future}
 import services.AuthService
 import utils.JwtUtils
-import model._
+
 
 @Singleton
 class AuthController @Inject()(

@@ -14,5 +14,8 @@ OPTIONS  /login  controllers.CorsController.preflight()
 
 # Login
 POST    /login          controllers.AuthController.login
+# Singup
+POST    /api/alumnos/registro    controllers.AlumnoController.registrar()
+POST    /api/profesores/registro    controllers.ProfesorController.registrarProfesor()
 
 #Prueba
