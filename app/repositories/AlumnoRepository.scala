@@ -45,4 +45,7 @@ class AlumnoRepository @Inject()(protected val dbConfigProvider: DatabaseConfigP
   def findByEmail(email: String): Future[Option[Alumno]] = {
     db.run(alumnos.filter(_.correo === email).result.headOption)
   }
+  def updatePassword(email: String, newPassword: String): Future[Int] = {
+    db.run(alumnos.filter(_.correo === email).map(_.password).update(newPassword))
+  }
 }

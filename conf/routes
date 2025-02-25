@@ -18,4 +18,6 @@ POST    /login          controllers.AuthController.login
 POST    /api/alumnos/registro    controllers.AlumnoController.registrar()
 POST    /api/profesores/registro    controllers.ProfesorController.registrarProfesor()
 
-#Prueba
+# Endpoints de recuperación de contraseña
+POST    /api/password/reset-request    controllers.PasswordResetController.requestReset
+POST    /api/password/reset            controllers.PasswordResetController.resetPassword

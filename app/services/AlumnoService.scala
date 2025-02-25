@@ -4,19 +4,31 @@ package services
 
 import javax.inject._
 import model.Alumno
-import repositories.{AlumnoRepository, ProfesorRepository}
+import repositories.{AlumnoRepository, ProfesorRepository, DirectivoRepository}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AlumnoService @Inject()(
                                alumnoRepository: AlumnoRepository,
-                               profesorRepository: ProfesorRepository)(implicit ec: ExecutionContext) {
+                               profesorRepository: ProfesorRepository,
+                               directivoRepository: DirectivoRepository)(implicit ec: ExecutionContext) {
 
   def registrarAlumno(alumno: Alumno): Future[Either[String, Alumno]] = {
-    // Verificar si el correo ya existe
-    alumnoRepository.findByEmail(alumno.correo).flatMap {
-      case Some(_) => Future.successful(Left("El correo ya está registrado"))
-      case None =>
+    val correo = alumno.correo
+
+    // Verificar si el correo ya existe en Alumno, Profesor o Directivo
+    val verificacionCorreo = for {
+      existeAlumno <- alumnoRepository.findByEmail(correo)
+      existeProfesor <- profesorRepository.findByEmail(correo)
+      existeDirectivo <- directivoRepository.findByEmail(correo)
+    } yield (existeAlumno, existeProfesor, existeDirectivo)
+
+    // Procesar el resultado de la verificación
+    verificacionCorreo.flatMap {
+      case (Some(_), _, _) => Future.successful(Left("El correo ya está registrado como alumno"))
+      case (_, Some(_), _) => Future.successful(Left("El correo ya está registrado como profesor"))
+      case (_, _, Some(_)) => Future.successful(Left("El correo ya está registrado como directivo"))
+      case (None, None, None) =>
         // Verificar si el código del profesor existe
         profesorRepository.findByCode(alumno.codigoProfesor).flatMap {
           case Some(profesor) =>
